@@ -7,7 +7,7 @@ void CubeSphereProjectionUtils::sphereToCube_cubify (double const sx, double con
 	double a2 = sx * sx * 2.0;
 	double b2 = sz * sz * 2.0;
 	double inner = -a2 + b2 -3;
-	double innersqrt = -sqrtf((inner * inner) - 12.0 * a2);
+	double innersqrt = -sqrt((inner * inner) - 12.0 * a2);
 	
 	x = sgnd(sx)*sqrt(innersqrt + a2 - b2 + 3.0) * isqrt2;
 	y = sgnd(sy);
@@ -27,22 +27,12 @@ void CubeSphereProjectionUtils::sphereToCube (double const sx, double const sy, 
 
 	//btVector3 spherev(sx, sy, sz);
 	//return a ? sphereToCube_cubify(swizzleXZY(spherev)).xzy : b ? sphereToCube_cubify(swizzleYZX(spherev)).zxy : sphereToCube_cubify(spherev);
-	a ? sphereToCube_cubify(sx, sy, sz, x, z, y) : b ? sphereToCube_cubify(sy, sx, sz, y, z, x) : sphereToCube_cubify(sx, sz, sy, x, y, z);
-	return;
-	double ilen = 1.0/sqrt(x*x + y*y + z*z);
-	x *= ilen;
-	y *= ilen;
-	z *= ilen;
+	a ? sphereToCube_cubify(sx, sy, sz, x, z, y) : ( b ? sphereToCube_cubify(sy, sx, sz, y, z, x) : sphereToCube_cubify(sx, sz, sy, x, y, z) );
 	}
 
 void CubeSphereProjectionUtils::sphereToCubeSimple (double const sx, double const sy, double const sz, double & x, double & y, double & z)  {
 	// handles the simplified special case where (x,z) are the plane
-	sphereToCube_cubify(sx, sy, sz, x, y, z);
-	return;
-	double ilen = 1.0/sqrt(x*x + y*y + z*z);
-	x *= ilen;
-	y *= ilen;
-	z *= ilen;
+	sphereToCube_cubify(sx, sy, sz, x, y, z);	
 	}
 
 void CubeSphereProjectionUtils::computeCentroid (double const u, double const v, double const usz, double const vsz, int const iXSz, int const iZSz, double & cx, double & cy, double & cz) {
