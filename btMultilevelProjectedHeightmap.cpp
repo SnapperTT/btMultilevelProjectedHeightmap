@@ -1082,7 +1082,7 @@ btVector3 btMultilevelProjectedHeightmap::inverseProject(const btVector3 & pos) 
 		py /= r;
 		pz /= r;
 		
-		CubeSphereProjectionUtils::sphereToCubeSimple(px, py, pz, u,h,v);
+		CubeSphereProjectionUtils::sphereToCube_bmph(px, py, pz, u,h,v);
 		
 		u += 1 - 2*sphereParams.u;
 		v += 1 - 2*sphereParams.v;

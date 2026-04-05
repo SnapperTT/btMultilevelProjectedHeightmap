@@ -14,10 +14,11 @@ void CubeSphereProjectionUtils::sphereToCube_cubify (double const sx, double con
 	z = sgnd(sz)*sqrt(innersqrt - a2 + b2 + 3.0) * isqrt2;
 	}
 
-void CubeSphereProjectionUtils::sphereToCube (double const sx, double const sy, double const sz, double & x, double & y, double & z) {
+void CubeSphereProjectionUtils::sphereToCube_bmph (double const sx, double const sy, double const sz, double & x, double & y, double & z) {
 	/// Converts normalized spherical coordinates to normalized cube coordinates
 	/// https://stackoverflow.com/questions/2656899/mapping-a-sphere-to-a-cube/
 	/// https://petrocket.blogspot.com/2010/04/sphere-to-cube-mapping.html
+	/// cubeToSphere -> sphereToCube will not create the correct mapping, but this one works for this library
 	double fx = abs(sx);
 	double fy = abs(sy);
 	double fz = abs(sz);
@@ -33,6 +34,37 @@ void CubeSphereProjectionUtils::sphereToCube (double const sx, double const sy, 
 void CubeSphereProjectionUtils::sphereToCubeSimple (double const sx, double const sy, double const sz, double & x, double & y, double & z)  {
 	// handles the simplified special case where (x,z) are the plane
 	sphereToCube_cubify(sx, sy, sz, x, y, z);	
+	}
+	
+void CubeSphereProjectionUtils::sphereToCube (double const sx, double const sy, double const sz, double &x, double &y, double &z) {
+    double fx = std::abs(sx);
+    double fy = std::abs(sy);
+    double fz = std::abs(sz);
+
+    double tx, ty, tz;
+    if (fy >= fx && fy >= fz) {
+        // Y is dominant
+        sphereToCube_cubify(sx, sy, sz, tx, ty, tz);
+        x = tx;
+        y = ty;
+        z = tz;
+		}
+    else if (fx >= fz) {
+        // X is dominant → swap X↔Y
+        sphereToCube_cubify(sy, sx, sz, tx, ty, tz);
+        // UNSWIZZLE
+        x = ty;
+        y = tx;
+        z = tz;
+		}
+    else {
+        // Z is dominant → swap Y↔Z
+        sphereToCube_cubify(sx, sz, sy, tx, ty, tz);
+        // UNSWIZZLE
+        x = tx;
+        y = tz;
+        z = ty;
+		}
 	}
 
 void CubeSphereProjectionUtils::computeCentroid (double const u, double const v, double const usz, double const vsz, int const iXSz, int const iZSz, double & cx, double & cy, double & cz) {

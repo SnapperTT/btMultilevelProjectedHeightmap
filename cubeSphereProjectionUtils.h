@@ -4,6 +4,7 @@
 class CubeSphereProjectionUtils {
 public:
 	static void sphereToCube_cubify (double const sx, double const sy, double const sz, double & x, double & y, double & z);
+	static void sphereToCube_bmph (double const sx, double const sy, double const sz, double & x, double & y, double & z);
 	static void sphereToCube (double const sx, double const sy, double const sz, double & x, double & y, double & z);
 	static void sphereToCubeSimple (double const sx, double const sy, double const sz, double & x, double & y, double & z);
 	static void computeCentroid (double const u, double const v, double const usz, double const vsz, int const iXSz, int const iZSz, double & cx, double & cy, double & cz);
