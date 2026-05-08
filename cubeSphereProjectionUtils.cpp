@@ -9,9 +9,15 @@ void CubeSphereProjectionUtils::sphereToCube_cubify (double const sx, double con
 	double inner = -a2 + b2 -3;
 	double innersqrt = -sqrt((inner * inner) - 12.0 * a2);
 	
-	x = sgnd(sx)*sqrt(innersqrt + a2 - b2 + 3.0) * isqrt2;
+	// Fix rounding errors
+	double xterm = innersqrt + a2 - b2 + 3.0;
+	if (xterm < 0.0) xterm = 0.0;
+	double zterm = innersqrt - a2 + b2 + 3.0;
+	if (zterm < 0.0) zterm = 0.0;
+	
+	x = sgnd(sx)*sqrt(xterm) * isqrt2;
 	y = sgnd(sy);
-	z = sgnd(sz)*sqrt(innersqrt - a2 + b2 + 3.0) * isqrt2;
+	z = sgnd(sz)*sqrt(zterm) * isqrt2;
 	}
 
 void CubeSphereProjectionUtils::sphereToCube_bmph (double const sx, double const sy, double const sz, double & x, double & y, double & z) {
