@@ -417,6 +417,7 @@ void btMultilevelProjectedHeightmap::getAabb(const btTransform& t, btVector3& aa
 		
 	
 void btMultilevelProjectedHeightmap::processAllTriangles(btTriangleCallback* callback, const btVector3& aabbMin, const btVector3& aabbMax) const {
+	//Logger_ldbg("HEIGHTMAP: aabb {} -> {}", btToString(aabbMin), btToString(aabbMax));
 	processAllTriangles_worker(callback, aabbMin, aabbMax, true);
 	}
 		
@@ -480,6 +481,9 @@ void btMultilevelProjectedHeightmap::processAllTriangles_worker(btTriangleCallba
 			localAabbMax[1] += internalOffset[1];
 			}
 			
+		
+	//Logger_ldbg("HEIGHTMAP: PATH A {} {} {} {} (x {} {} -> {} {}), localAabb {} -> {}", (localAabbMax.x() < xi), (localAabbMax.z() < zi), (localAabbMin.x() > xm+1), (localAabbMin.z() > zm+1), xi, zi, xm, zm, btToString(localAabbMin) , btToString(localAabbMax) );
+			
 		// early out - out of bounds
 		if (localAabbMax.x() < xi) return;
 		if (localAabbMax.z() < zi) return;
@@ -499,6 +503,8 @@ void btMultilevelProjectedHeightmap::processAllTriangles_worker(btTriangleCallba
 		//Logger::ldbg("localAabbMin {} {} {} {} [{}] [{}], input: [{}] [{}]", xi, zi, xm, zm, btToString(localAabbMin), btToString(localAabbMax), btToString(aabbMin), btToString(aabbMax));	
 		//Logger::ldbg("local up {}", btToString(localUp));
 		}
+	
+	//Logger_ldbg("HEIGHTMAP: PATH CC {} {}", (localAabbMin.y() < baseLevel.levelMaxHeight), localAabbMax.y() > baseLevel.levelMinHeight );
 	
 	if (localAabbMin.y() < baseLevel.levelMaxHeight && localAabbMax.y() > baseLevel.levelMinHeight) // early out height check
 		if (processAllTriangles_layer(baseLevel, -1, callback, aabbMin, aabbMax, localAabbMin, localAabbMax, localUp, firstCall, false, xi, zi, xm, zm))
@@ -1082,7 +1088,7 @@ btVector3 btMultilevelProjectedHeightmap::inverseProject(const btVector3 & pos) 
 		py /= r;
 		pz /= r;
 		
-		CubeSphereProjectionUtils::sphereToCube_bmph(px, py, pz, u,h,v);
+		CubeSphereProjectionUtils::sphereToCube(px, py, pz, u,h,v);
 		
 		u += 1 - 2*sphereParams.u;
 		v += 1 - 2*sphereParams.v;
